@@ -1,0 +1,143 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Add {{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p>
+    <ion-chip (click)="addClass()">
+      <ion-icon name="pin" color="primary"></ion-icon>
+      <ion-label>Add Class</ion-label>
+    </ion-chip>
+    <ion-chip (click)="addSection()">
+      <ion-icon name="pin" color="primary"></ion-icon>
+      <ion-label>Add Section</ion-label>
+    </ion-chip>
+    <ion-chip (click)="addSubject()">
+      <ion-icon name="pin" color="primary"></ion-icon>
+      <ion-label>Add Subject</ion-label>
+    </ion-chip>
+  </p>
+  <div class="ion-padding" *ngIf="addclass">
+    <form [formGroup]="classForm" (ngSubmit)="submitClass()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Class ID</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="class_id"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.class_id">
+          <ng-container *ngIf="class_id.hasError(error.type) && (class_id.dirty || class_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Class Name</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="class_name"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.class_id">
+          <ng-container *ngIf="class_name.hasError(error.type) && (class_name.dirty || class_name.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+      </ion-list>
+      <ion-button [disabled]="!classForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+    </form>
+  </div>
+
+  <div class="ion-padding" *ngIf="addsection">
+    <form [formGroup]="sectionForm" (ngSubmit)="submitSection()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Choose Class</ion-label>
+          <ion-select formControlName="section_class_id" placeholder="Select One">
+            <ion-select-option *ngFor="let c of classes" value="{{c.keyId}}">{{c.class_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.section_class_id">
+          <ng-container *ngIf="section_class_id.hasError(error.type) && (section_class_id.dirty || section_class_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Section ID</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="section_id"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.section_id">
+          <ng-container *ngIf="section_id.hasError(error.type) && (section_id.dirty || section_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Section Name</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="section_name"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.section_name">
+          <ng-container *ngIf="section_name.hasError(error.type) && (section_name.dirty || section_name.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+      </ion-list>
+      <ion-button [disabled]="!sectionForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+    </form>
+  </div>
+  <div class="ion-padding" *ngIf="addsubject">
+    <form [formGroup]="subjectForm" (ngSubmit)="submitSubject()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Choose Class</ion-label>
+          <ion-select formControlName="subject_class_id" placeholder="Select One">
+            <ion-select-option *ngFor="let c of classes" value="{{c.keyId}}">{{c.class_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.subject_class_id">
+          <ng-container *ngIf="subject_class_id.hasError(error.type) && (subject_class_id.dirty || subject_class_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <!-- <ion-item>
+          <ion-label position="floating">Choose Class</ion-label>
+          <ion-select formControlName="section_class_id" placeholder="Select One">
+            <ion-select-option *ngFor="let c of classes" value="{{c.keyId}}">{{c.class_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.section_class_id">
+          <ng-container *ngIf="section_class_id.hasError(error.type) && (section_class_id.dirty || section_class_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div> -->
+        <ion-item>
+          <ion-label position="floating">Subject ID</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="subject_id"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.subject_id">
+          <ng-container *ngIf="subject_id.hasError(error.type) && (subject_id.dirty || subject_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Subject Name</ion-label>
+          <ion-input autocapitalize inputmode="text" formControlName="subject_name"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.subject_name">
+          <ng-container *ngIf="subject_name.hasError(error.type) && (subject_name.dirty || subject_name.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+      </ion-list>
+      <ion-button [disabled]="!subjectForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+    </form>
+  </div>
+</ion-content>

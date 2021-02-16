@@ -1,0 +1,131 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Create Exam</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <form [formGroup]="examForm" (ngSubmit)="submit()">
+      <ion-list>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            Test ID
+          </ion-label>
+          <ion-input type="text" formControlName="uniqueTest_id"></ion-input>          
+        </ion-item>
+        <div *ngFor="let error of errorMessages.uniqueTest_id">
+          <ng-container *ngIf="uniqueTest_id.hasError(error.type) && (uniqueTest_id.dirty || uniqueTest_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            Exam Date
+          </ion-label>
+          <ion-datetime displayFormat="DD-MM-YYYY" formControlName="test_date"></ion-datetime>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.test_date">
+          <ng-container *ngIf="test_date.hasError(error.type) && (test_date.dirty || test_date.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            Exam Name
+          </ion-label>
+          <ion-input type="text" formControlName="test_name"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.test_name">
+          <ng-container *ngIf="test_name.hasError(error.type) && (test_name.dirty || test_name.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Choose Class</ion-label>
+          <ion-select placeholder="Select One" formControlName="class_id" (ionChange)="class_change()">
+            <ion-select-option value="05">Fifth Standard</ion-select-option>
+            <ion-select-option value="06">Sixth Standard</ion-select-option>
+            <ion-select-option value="07">Seventh Standard</ion-select-option>
+            <ion-select-option value="08">Eighth Standard</ion-select-option>
+            <ion-select-option value="09">Ninth Standard</ion-select-option>
+            <ion-select-option value="10">Tenth Standard</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.class_id">
+          <ng-container *ngIf="class_id.hasError(error.type) && (class_id.dirty || class_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Choose Section</ion-label>
+          <ion-select placeholder="Select One" formControlName="section_id" (ionChange)="section_change()">
+            <ion-select-option value="01">A</ion-select-option>
+            <ion-select-option value="02">B</ion-select-option>
+            <ion-select-option value="03">C</ion-select-option>
+            <ion-select-option value="04">D</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.section_id">
+          <ng-container *ngIf="section_id.hasError(error.type) && (section_id.dirty || section_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item>
+          <ion-label position="floating">Choose Subject</ion-label>
+          <ion-select placeholder="Select One" formControlName="subject_id" (ionChange)="subject_change()">
+            <ion-select-option value="english">English</ion-select-option>
+            <ion-select-option value="kannada">Kannada</ion-select-option>
+            <ion-select-option value="hindi">Hindi</ion-select-option>
+            <ion-select-option value="mathematics">Mathematics</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.subject_id">
+          <ng-container *ngIf="subject_id.hasError(error.type) && (subject_id.dirty || subject_id.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            No. of Questions
+          </ion-label>
+          <ion-input type="number" formControlName="no_of_questions"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.no_of_questions">
+          <ng-container *ngIf="no_of_questions.hasError(error.type) && (no_of_questions.dirty || no_of_questions.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            Total Marks
+          </ion-label>
+          <ion-input type="number" formControlName="total_marks"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.total_marks">
+          <ng-container *ngIf="total_marks.hasError(error.type) && (total_marks.dirty || total_marks.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+        <ion-item class="height-100percent">
+          <ion-label position="floating" class="white-space-normal">
+            Time Allowed (minutes)
+          </ion-label>
+          <ion-input type="number" formControlName="time_allowed"></ion-input>
+        </ion-item>
+        <div *ngFor="let error of errorMessages.time_allowed">
+          <ng-container *ngIf="time_allowed.hasError(error.type) && (time_allowed.dirty || time_allowed.touched)">
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+      </ion-list>
+      <ion-button [disabled]="!examForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,96 @@
+<ion-content padding class="animated fadeIn login auth-page">
+  <div class="theme-bg"></div>
+  <div class="auth-content">
+
+    <!-- Logo -->
+    <div padding-horizontal class="textcenter animated fadeInDown">
+      <div class="logo">
+        <!-- <img src="http://www.techcorner.borntalents.in/wp-content/uploads/2015/08/new_logo.png" /> -->
+      </div>
+      <h4 no-margin>
+        <ion-text color="light" class="fw700">
+         <h1 style="font-size: 40px;">Tech Corner Solutions</h1> 
+        </ion-text>
+      </h4>
+    </div>
+
+    <!-- Login form -->
+    <form [formGroup]="onLoginForm" class="list-form">
+      <ion-item class="animated fadeInUp">
+        <ion-label position="floating">
+          <ion-icon name="mail" item-start></ion-icon>
+          Email
+        </ion-label>
+        <ion-input color="secondary" type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <p ion-text class="text08" *ngIf="onLoginForm.get('email').touched && onLoginForm.get('email').hasError('required')">
+        <ion-text color="warning">
+          Required Field
+        </ion-text>
+      </p>
+
+      <ion-item class="animated fadeInUp">
+        <ion-label position="floating">
+          <ion-icon name="lock" item-start></ion-icon>
+          Password
+        </ion-label>
+        <ion-input color="secondary" type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <p ion-text color="warning" class="text08" *ngIf="onLoginForm.get('password').touched && onLoginForm.get('password').hasError('required')">
+        <ion-text color="warning">
+          Required Field
+        </ion-text>
+        </p>
+    </form>
+
+    <p text-right tappable (click)="forgotPass()" class="paz">
+      <ion-text color="light">
+        <strong>Forgot Pass?</strong>
+      </ion-text>
+    </p>
+
+    <div>
+      <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="tryLogin(onLoginForm.value)" [disabled]="!onLoginForm.valid" tappable>
+        <ion-icon name="log-in"></ion-icon>
+        Signin
+      </ion-button>
+
+      <!-- <p text-center>
+        <ion-text color="light">
+          Or Signin with:
+        </ion-text>
+      </p>
+
+      <ion-grid class="btn-group">
+        <ion-row>
+          <ion-col size="4">
+            <ion-button shape="round" expand="full" color="secondary">
+              <ion-icon slot="icon-only" name="logo-facebook"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="4">
+            <ion-button shape="round" expand="full" color="secondary">
+              <ion-icon slot="icon-only" name="logo-twitter"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="4">
+            <ion-button shape="round" expand="full" color="secondary">
+              <ion-icon slot="icon-only" name="logo-googleplus"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid> -->
+
+    </div>
+
+    <!-- Other links -->
+    <div class="textcenter">
+      <span text-center (click)="goToRegister()" class="paz" tappable>
+        <ion-text color="light">
+          New here? <strong>Sign Up</strong>
+        </ion-text>
+      </span>
+    </div>
+
+  </div>
+</ion-content>

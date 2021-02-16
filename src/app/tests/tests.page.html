@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Tests</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list>
+    <ion-row *ngFor="let test of tests" (click)="getQuestions(test)">
+      <ion-col [ngClass]="test.status==='active' ? 'white' : 'red'">
+        <ion-item>
+          <ion-icon [ngClass]="test.status==='active' ? 'fontwhite' : 'fontred'" name="reader" slot="start"></ion-icon>
+          <ion-label [ngClass]="test.status==='active' ? 'fontwhite' : 'fontred'">
+            <h2>Test Name: {{ test.test_name }}</h2>
+            <h3>Test Date: {{ test.test_date | date: 'dd-MM-YYYY' }}</h3>
+            <h3>No. of questions: {{ test.no_of_questions }}</h3>
+            <h3>Total marks: {{ test.total_marks }}</h3>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+  </ion-list>
+</ion-content>

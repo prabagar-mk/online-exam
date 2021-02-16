@@ -1,0 +1,23 @@
+:host {
+    ion-content {
+        --background: linear-gradient(135deg, var(--ion-color-dark), var(--ion-color-primary));
+    }
+}
+
+.paz {
+    position: relative;
+    text-align: center;
+    z-index: 10;
+}
+form {
+    margin: 15px;
+}
+ion-label {
+    padding-bottom: 20px;
+}
+.textcenter {
+    text-align: center;
+}
+.logo {
+    margin-top: 25%;
+}

@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Subjects</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-searchbar class="padding-2px" *ngIf="classes" (ionInput)="getClasses($event)"></ion-searchbar>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-item *ngIf="classes.length<=0" style="color:red;">
+      {{noClasses}}
+    </ion-item>
+    <ion-list>
+      <ion-item *ngFor="let a of classes">
+        <ion-card style="width: 100%;" type="button">
+          <ion-card-header style="padding: 0px !important;">
+            <ion-grid>
+              <ion-row>                
+                <ion-col (click)="loadSubjects(a.keyId)">
+                  <ion-card-subtitle style="white-space: normal;color: dodgerblue;">
+                    {{ a.class_id }} - {{ a.class_name }}
+                  </ion-card-subtitle>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            
+            
+          </ion-card-header>
+          <ion-card-content style="padding-left: 0px;" *ngIf="a.showSubjects">
+            <ion-searchbar class="padding-2px" *ngIf="areas" (ionInput)="getSubjects($event)"></ion-searchbar>
+              <ion-item *ngFor="let s of subjects">
+                <ion-row style="width: 100%;">
+                  <ion-col size="10">
+                    <ion-label style="white-space: normal;color: black;font-size: 14px;">
+                      {{ s.subject_id }}-{{ s.subject_name }}                  
+                    </ion-label>
+                  </ion-col>
+                  <ion-col size="2" class="ion-align-items-end">
+                    <ion-icon style="color: red;" name="remove-circle-outline" (click)="delSubject(a,s)"></ion-icon>
+                  </ion-col>
+                </ion-row>
+                
+              </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" size="small" (click)="add_subject()">
+      <ion-icon name="add-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button color="primary" size="small" (click)="goTop()">
+      <ion-icon name="arrow-up"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

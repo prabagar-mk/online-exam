@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Test Questions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card>
+      <ion-card-header>
+        <ion-icon name="reader" slot="start"></ion-icon>
+        <ion-card-subtitle>Date: {{ test.test_date }}</ion-card-subtitle>
+        <ion-card-title>Test : {{ test.test_name }}</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <h3>No. of questions: {{ test.no_of_questions }}</h3>
+        <h3>Total marks: {{ test.total_marks }}</h3>
+        <h3>Time Allowed: {{ test.time_allowed }} mins.</h3>
+        <h4 *ngIf="startTime">Time started: {{ startTime }}</h4>
+        <h4 *ngIf="timeConsumed">Time taken: {{ timeConsumed }}</h4>
+      </ion-card-content>
+    </ion-card>
+    <!-- <ion-item>
+      <ion-icon name="reader" slot="start"></ion-icon>
+      <ion-label>
+        <h2>Test Name: {{ test.test_name }}</h2>
+        <h3>Test Date: {{ test.test_date }}</h3>
+        <h3>No. of questions: {{ test.no_of_questions }}</h3>
+        <h3>Total marks: {{ test.total_marks }}</h3>
+      </ion-label>
+    </ion-item> -->
+    <ion-button *ngIf="!showQuestions" class="whiteSpaceNormal" expand="block" size="small" color="success" shape="round"
+            (click)="startExam()">
+            Start Exam
+          </ion-button>
+  </ion-list>
+  <ion-list *ngIf="showQuestions">
+    <ion-item *ngFor="let question of test.questions; let i = index">
+      <ion-row *ngIf="question.question_type==='optional'" [ngClass]="question.answer ? 'green' : 'red'">
+        <ion-col>
+          <ion-item>
+            <ion-radio-group [disabled]="showAnswers" name="{{question_name}}" value=""
+              [(ngModel)]="question.answer" (ionChange)="answerChange(question)">
+              <ion-list-header>
+                <ion-label class="whiteSpace"><h2>{{i+1}}: {{question.question}}</h2></ion-label>
+              </ion-list-header>
+              <ion-item *ngFor="let ans of question.optional_answers">
+                <ion-label>{{ans}}</ion-label>
+                <ion-radio [disabled]="showAnswers" slot="start" value="{{ans}}"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-item>
+          <ion-item class="correctanswerStyle" *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
+            <h5 class="correctanswerStyle">Answer: {{question.correct_answer}}</h5>
+          </ion-item>
+          <ion-item class="wronganswerStyle" *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
+            <h5 class="wronganswerStyle">Answer: {{question.correct_answer}}</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="question.question_type==='fill_blank'" [ngClass]="question.answer ? 'green' : 'red'">
+        <ion-col>
+          <ion-item>
+            <ion-label class="whiteSpace" position="floating">
+              <h2 class="h2class">{{i+1}}: {{question.question}}</h2>
+            </ion-label>
+            <ion-input class="h2class" [disabled]="showAnswers" *ngIf="question.question_type==='fill_blank'" type="text" placeholder=""
+              [(ngModel)]="question.answer" name="{{question_name}}" (ionBlur)="answerChange(question)"></ion-input>
+          </ion-item>
+          <ion-item class="correctanswerStyle" *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
+            <h5 class="correctanswerStyle">Answer: {{question.correct_answer}}</h5>
+          </ion-item>
+          <ion-item class="wronganswerStyle" *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
+            <h5 class="wronganswerStyle">Answer: {{question.correct_answer}}</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>     
+
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer *ngIf="showQuestions" class="ion-no-border">
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-button [disabled]="showAnswers" class="whiteSpaceNormal" expand="block" size="small" color="primary" shape="round"
+            (click)="submitAnswers(test)">Submit</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button class="whiteSpaceNormal" expand="block" size="small" color="secondary" shape="round"
+            (click)="cancel()">
+            Cancel
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
