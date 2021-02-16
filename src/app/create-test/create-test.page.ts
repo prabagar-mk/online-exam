@@ -32,21 +32,44 @@ export class CreateTestPage implements OnInit {
     public storage: Storage,
     private dataService: DataService,
     public navCtrl: NavController,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController
   ) { 
-    
-  }
-
-  ngOnInit() {
-    this.storage.get("loggedUser")
-    .then(res => {
-      if(res){
+    this.storage.get("loggedUser").then(res => {
+      if (res) {
         this.user = res;
+        console.log(this.user);
+        this.getClasseslist();
+      } else {
+        this.navCtrl.navigateRoot('/login');
       }
-    })
-    .catch(err => {
-      console.log(err);
+
     });
+  }
+  async getClasseslist() {
+    this.classes = [];
+    let loading = await this.loadingCtrl.create({
+      message: 'Loading Classes...'
+    });
+    await loading.present();
+    this.dataService.get_classes("class", this.user.institution_id)
+      .then(res => {
+        console.log(res);
+        this.classes = res;
+        this.classes1 = res;
+        loading.dismiss();
+        if (this.classes.length < 1) {
+          this.noClasses = "No Classes to show. Kindly add.";
+        } else {
+          //
+        }
+      }).catch(err => {
+        loading.dismiss();
+        console.log(err);
+      });
+  }
+  ngOnInit() {
+    
   }
 
   get uniqueTest_id() {
@@ -58,14 +81,14 @@ export class CreateTestPage implements OnInit {
   get test_name() {
     return this.examForm.get("test_name");
   }
-  get class_id() {
-    return this.examForm.get("class_id");
+  get test_class_id() {
+    return this.examForm.get("test_class_id");
   }
-  get section_id() {
-    return this.examForm.get("section_id");
-  }
-  get subject_id() {
-    return this.examForm.get("subject_id");
+  // get section_id() {
+  //   return this.examForm.get("section_id");
+  // }
+  get test_subject_id() {
+    return this.examForm.get("test_subject_id");
   }
   get no_of_questions() {
     return this.examForm.get("no_of_questions");
@@ -86,13 +109,13 @@ export class CreateTestPage implements OnInit {
     test_name: [
       { type: 'required', message: 'Exam Date required' }
     ],
-    class_id: [
+    test_class_id: [
       { type: 'required', message: 'Class required' }
     ],
-    section_id: [
-      { type: 'required', message: 'Section required' }
-    ],
-    subject_id: [
+    // section_id: [
+    //   { type: 'required', message: 'Section required' }
+    // ],
+    test_subject_id: [
       { type: 'required', message: 'Subject required' }
     ],
     no_of_questions: [
@@ -110,19 +133,29 @@ export class CreateTestPage implements OnInit {
     uniqueTest_id: ['', [Validators.required]],
     test_date: ['', [Validators.required]],
     test_name: ['', [Validators.required]],
-    class_id: ['', [Validators.required]],
-    section_id: ['', [Validators.required]],
-    subject_id: ['',  [Validators.required]],
+    test_class_id: ['', [Validators.required]],
+    //section_id: ['', [Validators.required]],
+    test_subject_id: ['',  [Validators.required]],
     no_of_questions: ['',  [Validators.required]],
     total_marks: ['',  [Validators.required]],
     time_allowed: ['',  [Validators.required]]
   });
 
   async class_change() {
-
-  }
-  async section_change() {
+    let loading = await this.loadingCtrl.create({
+      message: 'Loading Subjects...'
+    });
+    await loading.present();
+    this.subjects = [];
+    console.log(this.examForm.value.test_class_id);
     
+    this.dataService.get_class_subjects(this.examForm.value.test_class_id,this.user.institution_id).then(res => {
+      this.subjects = res;
+      loading.dismiss();
+    }).catch(err => {
+      console.log(err);
+      loading.dismiss();
+    })
   }
   async subject_change() {
     
@@ -131,13 +164,28 @@ export class CreateTestPage implements OnInit {
   async submit() {
     console.log(this.test);
     console.log(this.examForm.value);
+    if(this.classes && this.classes.length>0){
+      this.classes.forEach((c,ind) => {
+        if(c.keyId === this.examForm.value.test_class_id){
+          this.test.class_id = c.class_id;
+        }
+      });
+    }
+    if(this.subjects && this.subjects.length>0){
+      this.subjects.forEach((s,ind) => {
+        if(s.keyId === this.examForm.value.test_subject_id){
+          this.test.subject_id = s.subject_id;
+        }
+      });
+    }
+    this.test.institution_id = this.user.institution_id;
     this.test.addedById = this.user.userId;
     this.test.addedByName = this.user.firstName+" "+this.user.lastName;
     this.test.uniqueTest_id = this.examForm.value.uniqueTest_id;
-    this.test.class_id = this.examForm.value.class_id;
+    this.test.test_class_id = this.examForm.value.test_class_id;
     this.test.no_of_questions = this.examForm.value.no_of_questions;
-    this.test.section_id = this.examForm.value.section_id;
-    this.test.subject_id = this.examForm.value.subject_id;
+    //this.test.section_id = this.examForm.value.section_id;
+    this.test.test_subject_id = this.examForm.value.test_subject_id;
     this.test.test_date = this.examForm.value.test_date;
     this.test.test_name = this.examForm.value.test_name;
     this.test.time_allowed = this.examForm.value.time_allowed;

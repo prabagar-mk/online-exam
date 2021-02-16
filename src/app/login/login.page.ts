@@ -145,11 +145,11 @@ export class LoginPage implements OnInit {
   }
   async tryLogin(value) {
     console.log(value);
-    this.dataService.check_userLogin(value.email, btoa(value.password))
-      .subscribe(res => {
-        if (res[0]) {
+    this.dataService.check_userLogin1(value.email, btoa(value.password))
+      .then(res => {
+        if (res) {
           //console.log(res[0]);
-          this.storage.set("loggedUser", res[0]);
+          this.storage.set("loggedUser", res);
           this.router.navigate(["/home"]);
         } else {
           // this.authService.doLogin(value).then(

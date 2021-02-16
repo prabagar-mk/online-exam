@@ -12,6 +12,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list>
+    <ion-item style="color:red; font-weight:bold;" *ngIf="noTests">{{noTests}}</ion-item>
     <ion-row *ngFor="let test of tests" (click)="getQuestions(test)">
       <ion-col [ngClass]="test.status==='active' ? 'white' : 'red'">
         <ion-item>
@@ -27,4 +28,12 @@
     </ion-row>
 
   </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" size="small" (click)="add_test()">
+      <ion-icon name="add-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button color="primary" size="small" (click)="goTop()">
+      <ion-icon name="arrow-up"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

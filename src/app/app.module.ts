@@ -16,6 +16,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { IonicStorageModule } from '@ionic/storage';
 
+import {HttpClientModule} from '@angular/common/http';
 import { Camera } from '@ionic-native/camera/ngx';
 
 
@@ -30,6 +31,7 @@ import { Camera } from '@ionic-native/camera/ngx';
     AngularFirestoreModule, // imports firebase/firestore
     AngularFireAuthModule, // imports firebase/auth
     AngularFireStorageModule, // imports firebase/storage
+    HttpClientModule,
     AppRoutingModule,
     IonicStorageModule.forRoot()
   ],

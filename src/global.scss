@@ -24,3 +24,13 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+.alert-wrapper.sc-ion-alert-md {
+    --max-width: 95%;
+    white-space: normal;
+  }
+  .select-text {
+    white-space: normal;
+  }
+  .alert-radio-label.sc-ion-alert-md {
+    white-space: normal;
+  }

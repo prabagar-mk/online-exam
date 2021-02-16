@@ -3,75 +3,156 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { resolve } from 'url';
 import { Storage } from '@ionic/storage';
 import * as moment from 'moment';
+
+import { BehaviorSubject } from "rxjs";
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  public authenticated: boolean;
+  public student: any = [];
+  private login: boolean = false;
+  private loginSubject$ = new BehaviorSubject<boolean>(this.login);
+  loginChanged$ = this.loginSubject$.asObservable();
+  public authPerson$ = new BehaviorSubject<object>(this.student);
+  authPersonC$ = this.authPerson$.asObservable();
+
 
   private data = [];
   retarray: any = [];
   constructor(
     private firestore: AngularFirestore,
     public storage: Storage
-  ) { }
+  ) {
+    this.storage.get("loggedUser").then((v) => {
+      //console.log("Platforms: ", this.plt.platforms());
+      if (v) {
+        this.student = v;
+      }
+    });
+  }
+  updateLogin() {
+    this.login = !this.login;
+    //this.loginSubject$.next(this.login);
+  }
   check_userLogin(uid, pwd) {
     let userData = this.firestore.collection('users', ref => ref
       .where('userName', '==', uid)
       .where('password', '==', pwd).limit(1)).valueChanges();
+    this.student = userData;
+    this.authPerson$.next(this.student);
     return userData;
   }
-  add_Record(collection,record) {
+
+  check_userLogin1(uid, pwd) {
+    let retArr = {};
+    return new Promise((resolve, reject) => {
+      this.firestore.collection("users", ref => ref
+        .where('userName', '==', uid)
+        .where('password', '==', pwd).limit(1)).get()
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            let data = res.docs;
+            if (data.length > 0) {
+              data.forEach((d, index) => {
+                this.storage.set("loggedUser", d.data()).then(result => {
+                  this.student = d.data();
+                  this.authPerson$.next(d.data());
+                  resolve(d.data());
+                });
+
+              });
+            } else {
+              resolve(retArr);
+            }
+          } else {
+            resolve(retArr);
+          }
+        });
+    });
+  }
+
+  add_Record(collection, record) {
     console.log(record);
     return new Promise((resolve, reject) => {
       this.firestore.collection(collection).add(record).then(res => {
         console.log(res);
-        this.firestore.collection(collection).doc(res.id).update({keyId: res.id}).then(res => {
+        this.firestore.collection(collection).doc(res.id).update({ keyId: res.id }).then(res => {
           resolve("Record Added Successfully.");
         }).catch(err => {
           reject(err);
         });
-        
+
       });
     });
   }
-  add_Section(collection,record){
+  add_Section(collection, record) {
     console.log(record);
     return new Promise((resolve, reject) => {
       this.firestore.collection("class").doc(record.section_class_id)
-      .collection(collection).add(record).then(res => {
-        console.log(res);
-        this.firestore.collection("class").doc(record.section_class_id)
-        .collection(collection).doc(res.id).update({keyId: res.id}).then(res => {
-          resolve("Record Added Successfully.");
-        }).catch(err => {
-          reject(err);
+        .collection(collection).add(record).then(res => {
+          console.log(res);
+          this.firestore.collection("class").doc(record.section_class_id)
+            .collection(collection).doc(res.id).update({ keyId: res.id }).then(res => {
+              resolve("Record Added Successfully.");
+            }).catch(err => {
+              reject(err);
+            });
+
         });
-        
-      });
     });
   }
-  get_tests() {
+  get_tests(id) {
     let retArr = [];
     return new Promise((resolve, reject) => {
-      this.firestore.collection("questions").get()
+      this.firestore.collection("questions", ref => ref
+        .where("institution_id", "==", id)).get()
         .forEach(res => {
           if (res.docs && res.docs.length > 0) {
             let data = res.docs;
-            if(data.length>0){
-              data.forEach((d,index) => {
+            if (data.length > 0) {
+              data.forEach((d, index) => {
                 retArr.push(d.data());
-                if(index === data.length-1){
+                if (index === data.length - 1) {
                   resolve(retArr);
                 }
               });
-            }else{
+            } else {
+              resolve(retArr);
+            }
+          } else {
+            resolve(retArr);
+          }
+        });
+    });
+  }
+  get_class_tests(c, s, i) {
+    let retArr = [];
+    return new Promise((resolve, reject) => {
+      this.firestore.collection("questions", ref => ref
+        .where('test_class_id', '==', c)
+        .where('test_subject_id', '==', s)
+        .where('institution_id', '==', i)
+        .where('status', '==', 'active')).get()
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            let data = res.docs;
+            if (data.length > 0) {
+              data.forEach((d, index) => {
+                retArr.push(d.data());
+                if (index === data.length - 1) {
+                  resolve(retArr);
+                }
+              });
+            } else {
               resolve(retArr);
             }
           }
         });
     });
   }
-  getInstitution(collection,id){
+  getInstitution(collection, id) {
     let retArr = [];
     return new Promise((resolve, reject) => {
       this.firestore.collection(collection).doc(id).get()
@@ -80,7 +161,7 @@ export class DataService {
         });
     });
   }
-  get_classes(collection,ins_id) {
+  get_classes(collection, ins_id) {
     let retArr = [];
     return new Promise((resolve, reject) => {
       this.firestore.collection(collection, ref => ref
@@ -89,71 +170,72 @@ export class DataService {
         .forEach(res => {
           if (res.docs && res.docs.length > 0) {
             let data = res.docs;
-            if(data.length>0){
-              data.forEach((d,index) => {
+            if (data.length > 0) {
+              data.forEach((d, index) => {
                 retArr.push(d.data());
-                if(index === data.length-1){
+                if (index === data.length - 1) {
                   resolve(retArr);
                 }
               });
-            }else{
+            } else {
               resolve(retArr);
             }
           }
         });
     });
   }
-  get_class_sections(keyid){
+  get_class_sections(keyid) {
     let retArr = [];
     return new Promise((resolve, reject) => {
       this.firestore.collection("class").doc(keyid)
-      .collection("section", ref => ref
-      .orderBy('section_id', 'asc')).get()
+        .collection("section", ref => ref
+          .orderBy('section_id', 'asc')).get()
         .forEach(res => {
           if (res.docs && res.docs.length > 0) {
             let data = res.docs;
-            if(data.length>0){
-              data.forEach((d,index) => {
+            if (data.length > 0) {
+              data.forEach((d, index) => {
                 retArr.push(d.data());
-                if(index === data.length-1){
+                if (index === data.length - 1) {
                   resolve(retArr);
                 }
               });
-            }else{
+            } else {
               resolve(retArr);
             }
           }
         });
     });
   }
-  get_class_subjects(keyid,ins_id){
+  get_class_subjects(keyid, ins_id) {
     console.log(keyid);
     console.log(ins_id);
     let retArr = [];
     return new Promise((resolve, reject) => {
       this.firestore.collection("subject", ref => ref
-      .where('subject_class_id', '==', keyid)
-      .where('institution_id', '==', ins_id)
-      .orderBy('subject_id', 'asc')).get()
+        .where('subject_class_id', '==', keyid)
+        .where('institution_id', '==', ins_id)
+        .orderBy('subject_id', 'asc')).get()
         .forEach(res => {
           if (res.docs && res.docs.length > 0) {
             let data = res.docs;
             console.log(data);
-            if(data.length>0){
-              data.forEach((d,index) => {
+            if (data.length > 0) {
+              data.forEach((d, index) => {
                 console.log(d.data());
                 retArr.push(d.data());
-                if(index === data.length-1){
+                if (index === data.length - 1) {
                   resolve(retArr);
                 }
               });
-            }else{
+            } else {
               resolve(retArr);
             }
           }
         });
     });
   }
+
   get_records(collection) {
     let retArr = [];
     return new Promise((resolve, reject) => {
@@ -161,18 +243,40 @@ export class DataService {
         .forEach(res => {
           if (res.docs && res.docs.length > 0) {
             let data = res.docs;
-            if(data.length>0){
-              data.forEach((d,index) => {
+            if (data.length > 0) {
+              data.forEach((d, index) => {
                 retArr.push(d.data());
-                if(index === data.length-1){
+                if (index === data.length - 1) {
                   resolve(retArr);
                 }
               });
-            }else{
+            } else {
               resolve(retArr);
             }
           }
         });
+    });
+  }
+  upload_test_questions(id, record) {
+    return new Promise((resolve, reject) => {
+      this.firestore.collection("questions").doc(id).update(record).then(res => {
+        resolve("Questions uploaded successfully.");
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+  doLogout() {
+    return new Promise((resolve, reject) => {
+      this.storage.remove("loggedUser").then(res => {
+        this.storage.clear().then(res1 => {
+          resolve("You are logged out..");
+        }).catch(err1 => {
+          reject(err1);
+        });
+      }).catch(err => {
+        reject(err);
+      });
     });
   }
 
@@ -189,43 +293,43 @@ export class DataService {
     console.log(acode);
     return new Promise((resolve, reject) => {
       this.firestore.collection("areas", ref => ref.where('areaCode', '==', acode)).get()
-      .forEach(res => {
-        if (res.docs && res.docs.length > 0) {
-          for (let doc = 0; doc < res.docs.length; doc++) {
-            let rec = res.docs[doc].data();
-            if (rec) {
-              resolve(rec);
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            for (let doc = 0; doc < res.docs.length; doc++) {
+              let rec = res.docs[doc].data();
+              if (rec) {
+                resolve(rec);
+              }
             }
+          } else {
+            resolve("No record found.");
           }
-        } else {
-          resolve("No record found.");
-        }
-      })
-      .catch(err => {
-        reject(err);
-      });
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
-  checkstreetCode(areaKey,acode) {
+  checkstreetCode(areaKey, acode) {
     console.log(acode);
     return new Promise((resolve, reject) => {
       this.firestore.collection("areas").doc(areaKey)
-      .collection("streets", ref => ref.where('streetCode', '==', acode)).get()
-      .forEach(res => {
-        if (res.docs && res.docs.length > 0) {
-          for (let doc = 0; doc < res.docs.length; doc++) {
-            let rec = res.docs[doc].data();
-            if (rec) {
-              resolve(rec);
+        .collection("streets", ref => ref.where('streetCode', '==', acode)).get()
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            for (let doc = 0; doc < res.docs.length; doc++) {
+              let rec = res.docs[doc].data();
+              if (rec) {
+                resolve(rec);
+              }
             }
+          } else {
+            resolve("No record found.");
           }
-        } else {
-          resolve("No record found.");
-        }
-      })
-      .catch(err => {
-        reject(err);
-      });
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
   updateStreetKey() {
@@ -452,13 +556,13 @@ export class DataService {
     return new Promise((resolve, reject) => {
       this.firestore.collection("familyMembershdss").doc(record.keyId).set(record).then(res => {
         this.firestore.collection("familiesNew").doc(frecord.keyId).update(frecord).then(res1 => {
-          this.storage.set("family",frecord).then(res => {
+          this.storage.set("family", frecord).then(res => {
             resolve("Member Data " + res + "inserted Successfully and the members list updated in the family record.");
           })
-          .catch(err => {
-            resolve("Family details not updated correctly.");
-          });
-          
+            .catch(err => {
+              resolve("Family details not updated correctly.");
+            });
+
         })
           .catch(err1 => {
             reject(err1);
@@ -593,21 +697,21 @@ export class DataService {
   checkFid(wid) {
     return new Promise((resolve, reject) => {
       this.firestore.collection("users", ref => ref.where('fid', '==', wid)).get()
-      .forEach(res => {
-        if (res.docs && res.docs.length > 0) {
-          for (let doc = 0; doc < res.docs.length; doc++) {
-            let rec = res.docs[doc].data();
-            if (rec) {
-              resolve(rec);
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            for (let doc = 0; doc < res.docs.length; doc++) {
+              let rec = res.docs[doc].data();
+              if (rec) {
+                resolve(rec);
+              }
             }
+          } else {
+            resolve("No record found.");
           }
-        } else {
-          resolve("No record found.");
-        }
-      })
-      .catch(err => {
-        reject(err);
-      });
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
   update_profile(collection, record) {
@@ -773,10 +877,10 @@ export class DataService {
             for (let doc = 0; doc < res.docs.length; doc++) {
               let modifiedDt = moment(res.docs[doc].data().modifiedDate).format("DD-MM-YYYY");
               console.log(modifiedDt);
-              if(modifiedDt === today1){
+              if (modifiedDt === today1) {
                 retArray.push(res.docs[doc].data());
               }
-              if(doc === res.docs.length-1){
+              if (doc === res.docs.length - 1) {
                 resolve(retArray);
               }
             }
@@ -1081,5 +1185,5 @@ export class DataService {
     });
   }
 
-  
+
 }

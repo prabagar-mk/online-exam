@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from "../services/data.service";
 import { Storage } from '@ionic/storage';
 import { Router } from "@angular/router";
@@ -11,6 +11,7 @@ import { IonContent, ModalController, LoadingController, ToastController, AlertC
   styleUrls: ['./tests.page.scss'],
 })
 export class TestsPage implements OnInit {
+  @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   [x: string]: any;
   tests: any = [];
   constructor(
@@ -38,14 +39,14 @@ export class TestsPage implements OnInit {
   }
   async getTests(){
     let loading = await this.loadingCtrl.create({
-      message: 'Loading Areas...'
+      message: 'Loading Tests...'
     });
     await loading.present();
     let today = moment(new Date()).format("YYYY-MM-DD");
     console.log(today);
     let today1 = new Date(today).getTime();
     console.log(today1);
-    this.dataService.get_tests()
+    this.dataService.get_tests(this.user.institution_id)
       .then(res => {
         console.log(res);
         this.tests = res;
@@ -63,6 +64,9 @@ export class TestsPage implements OnInit {
               loading.dismiss();
             }
           });
+        }else{
+          this.noTests = "No tests to show.";
+          loading.dismiss();
         }
       })
       .catch(err => {
@@ -75,7 +79,12 @@ export class TestsPage implements OnInit {
     console.log(test);
     this.navCtrl.navigateRoot('/questions');
   }
-
+  async add_test(){
+    this.navCtrl.navigateRoot('/create-test');
+  }
+  async goTop() {
+    this.ionContent.scrollToTop(300);
+  }
   async doRefresh(event: any) {
     this.getTests().then(res => {
       event.target.complete();

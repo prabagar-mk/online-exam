@@ -46,21 +46,22 @@
         </div>
         <ion-item>
           <ion-label position="floating">Choose Class</ion-label>
-          <ion-select placeholder="Select One" formControlName="class_id" (ionChange)="class_change()">
-            <ion-select-option value="05">Fifth Standard</ion-select-option>
+          <ion-select placeholder="Select One" formControlName="test_class_id" (ionChange)="class_change()">
+            <ion-select-option *ngFor="let c of classes" value="{{c.keyId}}">{{c.class_name}}</ion-select-option>
+            <!-- <ion-select-option value="05">Fifth Standard</ion-select-option>
             <ion-select-option value="06">Sixth Standard</ion-select-option>
             <ion-select-option value="07">Seventh Standard</ion-select-option>
             <ion-select-option value="08">Eighth Standard</ion-select-option>
             <ion-select-option value="09">Ninth Standard</ion-select-option>
-            <ion-select-option value="10">Tenth Standard</ion-select-option>
+            <ion-select-option value="10">Tenth Standard</ion-select-option> -->
           </ion-select>
         </ion-item>
-        <div *ngFor="let error of errorMessages.class_id">
-          <ng-container *ngIf="class_id.hasError(error.type) && (class_id.dirty || class_id.touched)">
+        <div *ngFor="let error of errorMessages.test_class_id">
+          <ng-container *ngIf="test_class_id.hasError(error.type) && (test_class_id.dirty || test_class_id.touched)">
             <small class="error-message">{{error.message}}</small>
           </ng-container>
         </div>
-        <ion-item>
+        <!-- <ion-item>
           <ion-label position="floating">Choose Section</ion-label>
           <ion-select placeholder="Select One" formControlName="section_id" (ionChange)="section_change()">
             <ion-select-option value="01">A</ion-select-option>
@@ -73,18 +74,19 @@
           <ng-container *ngIf="section_id.hasError(error.type) && (section_id.dirty || section_id.touched)">
             <small class="error-message">{{error.message}}</small>
           </ng-container>
-        </div>
+        </div> -->
         <ion-item>
           <ion-label position="floating">Choose Subject</ion-label>
-          <ion-select placeholder="Select One" formControlName="subject_id" (ionChange)="subject_change()">
-            <ion-select-option value="english">English</ion-select-option>
+          <ion-select placeholder="Select One" formControlName="test_subject_id" (ionChange)="subject_change()">
+            <ion-select-option *ngFor="let s of subjects" value="{{s.keyId}}">{{s.subject_name}}</ion-select-option>
+            <!-- <ion-select-option value="english">English</ion-select-option>
             <ion-select-option value="kannada">Kannada</ion-select-option>
             <ion-select-option value="hindi">Hindi</ion-select-option>
-            <ion-select-option value="mathematics">Mathematics</ion-select-option>
+            <ion-select-option value="mathematics">Mathematics</ion-select-option> -->
           </ion-select>
         </ion-item>
-        <div *ngFor="let error of errorMessages.subject_id">
-          <ng-container *ngIf="subject_id.hasError(error.type) && (subject_id.dirty || subject_id.touched)">
+        <div *ngFor="let error of errorMessages.test_subject_id">
+          <ng-container *ngIf="test_subject_id.hasError(error.type) && (test_subject_id.dirty || test_subject_id.touched)">
             <small class="error-message">{{error.message}}</small>
           </ng-container>
         </div>

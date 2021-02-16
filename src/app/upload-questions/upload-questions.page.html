@@ -8,5 +8,76 @@
 </ion-header>
 
 <ion-content>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Choose Class</ion-label>
+          <ion-select [(ngModel)]="class_id" placeholder="Select One" (ionChange)="chooseSubject()">
+            <ion-select-option *ngFor="let c of classes" value="{{c.keyId}}">{{c.class_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Choose Subject</ion-label>
+          <ion-select [(ngModel)]="subject_id" placeholder="Select One" (ionChange)="chooseTests()">
+            <ion-select-option *ngFor="let s of subjects" value="{{s.keyId}}">{{s.subject_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Choose Test/Exam</ion-label>
+          <ion-select [(ngModel)]="test_id" placeholder="Select One">
+            <ion-select-option *ngFor="let t of tests" value="{{t.keyId}}">{{t.test_name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle></ion-card-subtitle>
+            <ion-card-title>Upload Questions</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <input [disabled]="!class_id || !test_id" type="file" (change)="onFileChange($event)" multiple="false" />
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button [disabled]="!class_id || !test_id || newData.length<1" expand="block" (click)="upload_questions()">Upload</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="newData.length>0">
+    <table style="border: 1px solid;">
+      <tr>
+        <td style="border: 1px solid;">Question No</td>
+        <td style="border: 1px solid;">Type</td>
+        <td style="border: 1px solid;">Question</td>
+        <td style="border: 1px solid;">Marks</td>
+        <td style="border: 1px solid;">Optional Answers</td>
+        <td style="border: 1px solid;">Correct Answer</td>
+      </tr>
+      <tr *ngFor="let d of newData">
+        <td style="border: 1px solid;">{{d.question_no}}</td>
+        <td style="border: 1px solid;">{{d.question_type}}</td>
+        <td style="border: 1px solid;">{{d.question}}</td>
+        <td style="border: 1px solid;">{{d.question_mark}}</td>
+        <td style="border: 1px solid;">{{d.optional_answers}}</td>
+        <td style="border: 1px solid;">{{d.correct_answer}}</td>
+      </tr>
+    </table>
+  </ion-grid>
 </ion-content>
