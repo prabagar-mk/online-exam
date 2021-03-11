@@ -27,7 +27,7 @@
       <ion-list>
         <ion-item>
           <ion-label position="floating">Class ID</ion-label>
-          <ion-input autocapitalize inputmode="text" formControlName="class_id"></ion-input>
+          <ion-input autocapitalize inputmode="text" formControlName="class_id" (ionBlur)="checkClassId()"></ion-input>
         </ion-item>
         <div *ngFor="let error of errorMessages.class_id">
           <ng-container *ngIf="class_id.hasError(error.type) && (class_id.dirty || class_id.touched)">
@@ -36,15 +36,15 @@
         </div>
         <ion-item>
           <ion-label position="floating">Class Name</ion-label>
-          <ion-input autocapitalize inputmode="text" formControlName="class_name"></ion-input>
+          <ion-input autocapitalize inputmode="text" formControlName="class_name" (ionBlur)="checkClassName()"></ion-input>
         </ion-item>
-        <div *ngFor="let error of errorMessages.class_id">
+        <div *ngFor="let error of errorMessages.class_name">
           <ng-container *ngIf="class_name.hasError(error.type) && (class_name.dirty || class_name.touched)">
             <small class="error-message">{{error.message}}</small>
           </ng-container>
         </div>
       </ion-list>
-      <ion-button [disabled]="!classForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
+      <ion-button [disabled]="!addClassValid || !classForm.valid" type="submit" expand="block">Submit <ion-icon slot="end"
         name="create">
       </ion-icon>
     </ion-button>

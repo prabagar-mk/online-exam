@@ -15,7 +15,7 @@
         <ion-card-subtitle>Date: {{ test.test_date }}</ion-card-subtitle>
         <ion-card-title>Test : {{ test.test_name }}</ion-card-title>
       </ion-card-header>
-    
+
       <ion-card-content>
         <h3>No. of questions: {{ test.no_of_questions }}</h3>
         <h3>Total marks: {{ test.total_marks }}</h3>
@@ -33,20 +33,36 @@
         <h3>Total marks: {{ test.total_marks }}</h3>
       </ion-label>
     </ion-item> -->
-    <ion-button *ngIf="!showQuestions" class="whiteSpaceNormal" expand="block" size="small" color="success" shape="round"
-            (click)="startExam()">
-            Start Exam
+    <ion-button *ngIf="user.user_type==='student' && !showQuestions" class="whiteSpaceNormal" expand="block" size="small"
+      color="success" shape="round" (click)="startExam()">
+      Start Exam
+    </ion-button>
+    <ion-grid *ngIf="user.user_type==='faculty' || user.user_type==='admin'">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button class="whiteSpaceNormal" expand="block" size="small" color="primary"
+            shape="round" (click)="updateQuestions(test)">Update Questions</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button class="whiteSpaceNormal" expand="block" size="small" color="secondary" shape="round"
+            (click)="deleteTest()">
+            Delete Test
           </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-list>
   <ion-list *ngIf="showQuestions">
     <ion-item *ngFor="let question of test.questions; let i = index">
       <ion-row *ngIf="question.question_type==='optional'" [ngClass]="question.answer ? 'green' : 'red'">
         <ion-col>
           <ion-item>
-            <ion-radio-group [disabled]="showAnswers" name="{{question_name}}" value=""
-              [(ngModel)]="question.answer" (ionChange)="answerChange(question)">
+            <ion-radio-group [disabled]="showAnswers" name="{{question_name}}" value="" [(ngModel)]="question.answer"
+              (ionChange)="answerChange(question)">
               <ion-list-header>
-                <ion-label class="whiteSpace"><h2>{{i+1}}: {{question.question}}</h2></ion-label>
+                <ion-label class="whiteSpace">
+                  <h2>{{i+1}}: {{question.question}}</h2>
+                </ion-label>
               </ion-list-header>
               <ion-item *ngFor="let ans of question.optional_answers">
                 <ion-label>{{ans}}</ion-label>
@@ -54,10 +70,12 @@
               </ion-item>
             </ion-radio-group>
           </ion-item>
-          <ion-item class="correctanswerStyle" *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
+          <ion-item class="correctanswerStyle"
+            *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
             <h5 class="correctanswerStyle">Answer: {{question.correct_answer}}</h5>
           </ion-item>
-          <ion-item class="wronganswerStyle" *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
+          <ion-item class="wronganswerStyle"
+            *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
             <h5 class="wronganswerStyle">Answer: {{question.correct_answer}}</h5>
           </ion-item>
         </ion-col>
@@ -68,17 +86,20 @@
             <ion-label class="whiteSpace" position="floating">
               <h2 class="h2class">{{i+1}}: {{question.question}}</h2>
             </ion-label>
-            <ion-input class="h2class" [disabled]="showAnswers" *ngIf="question.question_type==='fill_blank'" type="text" placeholder=""
-              [(ngModel)]="question.answer" name="{{question_name}}" (ionBlur)="answerChange(question)"></ion-input>
+            <ion-input class="h2class" [disabled]="showAnswers" *ngIf="question.question_type==='fill_blank'"
+              type="text" placeholder="" [(ngModel)]="question.answer" name="{{question_name}}"
+              (ionBlur)="answerChange(question)"></ion-input>
           </ion-item>
-          <ion-item class="correctanswerStyle" *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
+          <ion-item class="correctanswerStyle"
+            *ngIf="showAnswers && (question.answer && question.answer === question.correct_answer) ">
             <h5 class="correctanswerStyle">Answer: {{question.correct_answer}}</h5>
           </ion-item>
-          <ion-item class="wronganswerStyle" *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
+          <ion-item class="wronganswerStyle"
+            *ngIf="showAnswers && (!question.answer || (question.answer && question.answer !== question.correct_answer))">
             <h5 class="wronganswerStyle">Answer: {{question.correct_answer}}</h5>
           </ion-item>
         </ion-col>
-      </ion-row>     
+      </ion-row>
 
     </ion-item>
   </ion-list>
@@ -88,8 +109,8 @@
     <ion-grid>
       <ion-row>
         <ion-col size="6">
-          <ion-button [disabled]="showAnswers" class="whiteSpaceNormal" expand="block" size="small" color="primary" shape="round"
-            (click)="submitAnswers(test)">Submit</ion-button>
+          <ion-button [disabled]="showAnswers" class="whiteSpaceNormal" expand="block" size="small" color="primary"
+            shape="round" (click)="submitAnswers(test)">Submit</ion-button>
         </ion-col>
         <ion-col size="6">
           <ion-button class="whiteSpaceNormal" expand="block" size="small" color="secondary" shape="round"

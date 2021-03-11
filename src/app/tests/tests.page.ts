@@ -13,6 +13,7 @@ import { IonContent, ModalController, LoadingController, ToastController, AlertC
 export class TestsPage implements OnInit {
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   [x: string]: any;
+  user: any = {};
   tests: any = [];
   constructor(
     private router: Router,

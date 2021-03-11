@@ -72,7 +72,56 @@ export class DataService {
         });
     });
   }
-
+  checkClassId(insid,cid) {
+    let retArr = [];
+    return new Promise((resolve, reject) => {
+      this.firestore.collection("class", ref => ref
+        .where('institution_id', '==', insid)
+        .where('class_id', '==', cid)).get()
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            let data = res.docs;
+            if (data.length > 0) {
+              data.forEach((d, index) => {
+                retArr.push(d.data());
+                if(index===data.length-1){
+                  resolve(retArr);
+                }
+              });
+            } else {
+              resolve(retArr);
+            }
+          } else {
+            resolve(retArr);
+          }
+        });
+    });
+  }
+  checkClassName(insid,cname) {
+    let retArr = [];
+    return new Promise((resolve, reject) => {
+      this.firestore.collection("class", ref => ref
+        .where('institution_id', '==', insid)
+        .where('class_name', '==', cname)).get()
+        .forEach(res => {
+          if (res.docs && res.docs.length > 0) {
+            let data = res.docs;
+            if (data.length > 0) {
+              data.forEach((d, index) => {
+                retArr.push(d.data());
+                if(index===data.length-1){
+                  resolve(retArr);
+                }
+              });
+            } else {
+              resolve(retArr);
+            }
+          } else {
+            resolve(retArr);
+          }
+        });
+    });
+  }
   add_Record(collection, record) {
     console.log(record);
     return new Promise((resolve, reject) => {

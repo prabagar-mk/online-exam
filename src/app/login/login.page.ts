@@ -148,7 +148,7 @@ export class LoginPage implements OnInit {
     this.dataService.check_userLogin1(value.email, btoa(value.password))
       .then(res => {
         if (res) {
-          //console.log(res[0]);
+          console.log(res);
           this.storage.set("loggedUser", res);
           this.router.navigate(["/home"]);
         } else {

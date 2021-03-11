@@ -269,7 +269,72 @@ export class AddClassSectionPage implements OnInit {
         await alert.present();
       });
   }
-
+  async checkClassId(){
+    console.log(this.classForm.value.class_id);
+    let cid = this.classForm.value.class_id;
+    this.dataService.checkClassId(this.user.institution_id,cid).then(async res => {
+      if(res[0]){
+        const alert = await this.alertCtrl.create({
+          header: 'Class Id',
+          message: 'Class ID '+this.classForm.value.class_id+' already exists. Kindly enter a new id.',
+          buttons: [
+            {
+              text: 'Ok', role: 'cancel', cssClass: 'secondary', handler: () => {
+                this.classForm.controls['class_id'].setValue("");
+              }
+            }
+          ]
+        });
+        await alert.present();
+      }
+    }).catch(async err => {
+      const alert = await this.alertCtrl.create({
+        header: 'Class Id',
+        message: 'Error occured. Could not check the clas id.',
+        buttons: [
+          {
+            text: 'Ok', role: 'cancel', cssClass: 'secondary', handler: () => {
+              this.classForm.value.class_id = "";
+            }
+          }
+        ]
+      });
+      await alert.present();
+    });
+  }
+  async checkClassName(){
+    console.log(this.classForm.value.class_name);
+    let cname = this.classForm.value.class_name;
+    this.dataService.checkClassName(this.user.institution_id,cname).then(async res => {
+      if(res[0]){
+        const alert = await this.alertCtrl.create({
+          header: 'Class Name',
+          message: 'Class Name '+cname+' already exists. Kindly enter a new name.',
+          buttons: [
+            {
+              text: 'Ok', role: 'cancel', cssClass: 'secondary', handler: () => {
+                this.classForm.controls['class_name'].setValue("");
+              }
+            }
+          ]
+        });
+        await alert.present();
+      }
+    }).catch(async err => {
+      const alert = await this.alertCtrl.create({
+        header: 'Class Name',
+        message: 'Error occured. Could not check the clas name.',
+        buttons: [
+          {
+            text: 'Ok', role: 'cancel', cssClass: 'secondary', handler: () => {
+              this.classForm.controls['class_name'].setValue("");
+            }
+          }
+        ]
+      });
+      await alert.present();
+    });
+  }
   async submitSubject() {
     let loading = await this.loadingCtrl.create({
       message: 'Saving Subject Details...'

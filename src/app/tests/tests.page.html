@@ -29,7 +29,7 @@
 
   </ion-list>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" size="small" (click)="add_test()">
+    <ion-fab-button *ngIf="user.user_type==='faculty'" color="primary" size="small" (click)="add_test()">
       <ion-icon name="add-circle"></ion-icon>
     </ion-fab-button>
     <ion-fab-button color="primary" size="small" (click)="goTop()">
